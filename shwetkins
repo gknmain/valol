@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>A very important question 💍</title>
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #fff7ed, #fdf2f8);
+      color:#1f2937;
+    }
+
+    .card{
+      width:min(560px, 92vw);
+      background:white;
+      border-radius:18px;
+      padding:28px 22px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+    }
+
+    p{
+      margin:0 0 18px;
+      opacity:0.85;
+    }
+
+    .arena{
+      position:relative;
+      height:220px;
+      border-radius:14px;
+      border:1px dashed rgba(0,0,0,0.2);
+      background:#fffafc;
+    }
+
+    .btn{
+      position:absolute;
+      padding:12px 16px;
+      border-radius:12px;
+      border:0;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(0,0,0,0.15);
+    }
+
+    #yes{
+      left:22%;
+      top:55%;
+      background:#22c55e;
+      color:white;
+    }
+
+    #no{
+      left:62%;
+      top:55%;
+      background:#f1f5f9;
+      color:#0f172a;
+    }
+
+    .message{
+      margin-top:14px;
+      min-height:24px;
+      font-weight:600;
+    }
+
+    .final{
+      display:none;
+      margin-top:18px;
+      text-align:center;
+      font-weight:600;
+    }
+
+    .final span{
+      display:block;
+      margin-top:8px;
+      opacity:0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Hello Shweta, will you be my Valentine? 💖</h1>
+    <p>This question has long term intentions and mild husband energy.</p>
+
+    <div class="arena" id="arena">
+      <button class="btn" id="yes">Yes 💍</button>
+      <button class="btn" id="no">No 😌</button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="final" id="final">
+      <div>Okay.</div>
+      <span>
+        I respect this answer.<br>
+        I will withdraw gracefully, dramatically, and with snacks.<br><br>
+        Will try again next year.<br>
+        Still mentally your husband though. 🙂
+      </span>
+    </div>
+  </div>
+
+<script>
+  const arena = document.getElementById("arena");
+  const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
+  const msg = document.getElementById("message");
+  const final = document.getElementById("final");
+
+  let noCount = 0;
+
+  const nudges = [
+    "Shweta, this feels legally incorrect.",
+    "Future wife behaviour detected. Please confirm.",
+    "This button is clearly nervous about commitment.",
+    "Our imaginary wedding guests are confused.",
+    "Think of this as a rehearsal.",
+    "I have already emotionally picked curtains.",
+    "This is just a formality at this point.",
+    "Even destiny is side eyeing this click.",
+    "Okay but like, you know how this ends.",
+    "Last chance before I become philosophical."
+  ];
+
+  function moveNo(){
+    const a = arena.getBoundingClientRect();
+    const b = noBtn.getBoundingClientRect();
+    const pad = 10;
+
+    const maxX = a.width - b.width - pad;
+    const maxY = a.height - b.height - pad;
+
+    const x = pad + Math.random() * maxX;
+    const y = pad + Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top  = y + "px";
+  }
+
+  function handleNo(){
+    noCount++;
+
+    if(noCount >= 10){
+      noBtn.disabled = true;
+      noBtn.style.opacity = 0.6;
+      msg.textContent = "";
+      final.style.display = "block";
+      return;
+    }
+
+    msg.textContent = nudges[noCount - 1];
+    moveNo();
+  }
+
+  ["mouseenter","pointerenter","touchstart","focus"].forEach(evt => {
+    noBtn.addEventListener(evt, e => {
+      e.preventDefault();
+      handleNo();
+    }, { passive:false });
+  });
+
+  yesBtn.addEventListener("click", () => {
+    msg.textContent = "Excellent choice. Very on brand for us.";
+    yesBtn.textContent = "Yes 💍 (locked in)";
+    noBtn.disabled = true;
+    noBtn.style.opacity = 0.5;
+
+    setTimeout(() => {
+      alert(
+        "Perfect.\n\n" +
+        "This has been noted for future reference.\n" +
+        "Please coordinate with me for dates, desserts, and eventually life."
+      );
+    }, 200);
+  });
+
+  msg.textContent = "Please choose wisely. Or romantically.";
+</script>
+
+</body>
+</html>
