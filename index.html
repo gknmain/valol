@@ -119,27 +119,32 @@
   const final = document.getElementById("final");
 
   let noCount = 0;
+  let coolingDown = false;
 
   const nudges = [
-    "Shweta, this feels legally incorrect.",
-    "Future wife behaviour detected. Please confirm.",
+    "Shweta, what is this behaviour?",
+    "What vey? Why you do this vey.",
     "This button is clearly nervous about commitment.",
     "Our imaginary wedding guests are confused.",
-    "Think of this as a rehearsal.",
+    "Think of this as....a rehearsal.",
     "I have already emotionally picked curtains.",
     "This is just a formality at this point.",
-    "Even destiny is side eyeing this click.",
+    "Im sorry, do you NOT want sooraj santhosh singing?",
     "Okay but like, you know how this ends.",
     "Last chance before I become philosophical."
   ];
+
+  function setMessage(text){
+    msg.textContent = text;
+  }
 
   function moveNo(){
     const a = arena.getBoundingClientRect();
     const b = noBtn.getBoundingClientRect();
     const pad = 10;
 
-    const maxX = a.width - b.width - pad;
-    const maxY = a.height - b.height - pad;
+    const maxX = Math.max(pad, a.width - b.width - pad);
+    const maxY = Math.max(pad, a.height - b.height - pad);
 
     const x = pad + Math.random() * maxX;
     const y = pad + Math.random() * maxY;
@@ -149,30 +154,39 @@
   }
 
   function handleNo(){
+    if (coolingDown) return;
+    coolingDown = true;
+
     noCount++;
 
-    if(noCount >= 10){
+    if (noCount >= 10){
       noBtn.disabled = true;
       noBtn.style.opacity = 0.6;
-      msg.textContent = "";
+      setMessage("");
       final.style.display = "block";
+      coolingDown = false;
       return;
     }
 
-    msg.textContent = nudges[noCount - 1];
+    setMessage(nudges[noCount - 1] || "Nice try. 👀");
     moveNo();
+
+    // allow the next attempt after a tiny pause so events don't double fire
+    setTimeout(() => { coolingDown = false; }, 180);
   }
 
-  ["mouseenter","pointerenter","touchstart","focus"].forEach(evt => {
-    noBtn.addEventListener(evt, e => {
-      e.preventDefault();
-      handleNo();
-    }, { passive:false });
+  // Use pointerdown for consistent behaviour across mouse + touch
+  noBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    handleNo();
   });
 
+  // Also dodge if they hover with a mouse
+  noBtn.addEventListener("mouseenter", () => handleNo());
+
   yesBtn.addEventListener("click", () => {
-    msg.textContent = "Excellent choice. Very on brand for us.";
-    yesBtn.textContent = "Yes 💍 (locked in)";
+    setMessage("Excellent choice. Very on brand for us.");
+    yesBtn.textContent = "Yes (locked in)";
     noBtn.disabled = true;
     noBtn.style.opacity = 0.5;
 
@@ -185,8 +199,9 @@
     }, 200);
   });
 
-  msg.textContent = "Please choose wisely. Or romantically.";
+  setMessage("Please choose wisely. Or romantically.");
 </script>
+
 
 </body>
 </html>
